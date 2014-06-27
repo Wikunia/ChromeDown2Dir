@@ -1,7 +1,7 @@
 {
   "name": "Downloaded files into the right dir",
   "description": "Your files will be sorted automatically, depending on the url",
-  "version": "1",
+  "version": "1.0.1",
   "minimum_chrome_version": "26.0.1428",
   "background": {
     "scripts": ["bg.js"],
