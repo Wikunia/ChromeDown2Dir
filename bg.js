@@ -13,6 +13,8 @@ chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
 	dirArray[2] = [];
 	// url with regex
 	dirArray[0]["urlRegEx"] = /https:\/\/studip.tu-clausthal.de\/sendfile.php?(.*?)&file_name=(.*?).pdf/;
+	// url:[,"test","Programmierkurs"] would mean if after sendfile.php? "test" is inside (.*?) OR Programmierkurs is inside (.*?) (after filename)
+	// => use the dir
 	dirArray[0]["indexDir"] = [
 								{url:[,,"Programmierkurs"],dir:"Documents/CLZ/TUC/S2/Programmierkurs/"},
 								{url:[,,"Ana2"],dir:"Documents/CLZ/TUC/S2/Analysis/"},
@@ -49,14 +51,16 @@ chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
 			for (var i = 0; i < dirArray[r]["indexDir"].length; i++) {
 				// check if entry has a url part
 				if (dirArray[r]["indexDir"][i].url) {
-					for (var u = 0; u < dirArray[r]["indexDir"].url.length; u++) {
-						if (urlRegex[u] == dirArray[r]["indexDir"][i].url[u]) {
-							dir = dirArray[r]["indexDir"][i].dir;
-							break_out = true;
-							break;
-						}
-						if (break_out) {
-							break;
+					for (var u = 0; u < dirArray[r]["indexDir"][i].url.length; u++) {
+						if (dirArray[r]["indexDir"][i].url[u]) {
+							if (urlRegex[u].indexOf(dirArray[r]["indexDir"][i].url[u]) >= 0) {
+								dir = dirArray[r]["indexDir"][i].dir;
+								break_out = true;
+								break;
+							}
+							if (break_out) {
+								break;
+							}
 						}
 					}
 				} else {dir = dirArray[r]["indexDir"][i].dir; break_out = true; }
